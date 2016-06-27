@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Georgia|Open+Sans|Roboto">
 
+  <link rel="import" href="https://polygit.org/components/paper-button/paper-button.html">
+
   <!-- pwa.html should run at `/pwa` -->
   <script>
     if (window.location.pathname.indexOf('/examples') == 0) {
-      window.location.assign('/pwa');
+      // window.location.assign('/pwa');
     }
   </script>
 
@@ -81,20 +83,26 @@
   <div class="container">
     <section id="stream" class="stream">
       <article class="card">
-        <a href="/pwa/examples.build/article.amp.max.html">
+        <a href="/examples.build/article.amp.html">
           <h4>Lorem Ipsum</h4>
           <div class="detail">Fusce pretium tempor justo, vitae consequat dolor maximus eget.</div>
         </a>
       </article>
       <article class="card">
-        <a href="/pwa/examples.build/youtube.amp.max.html">
+        <a href="/examples.build/youtube.amp.html">
           <h4>YouTube video</h4>
           <div class="detail">Fusce pretium tempor justo, vitae consequat dolor maximus eget.</div>
         </a>
       </article>
     </section>
 
-    <div id="doc-container" class="doc-container">
+    <amp-viewer>
+      <paper-button raised>
+        Awesome time!
+      </paper-button>
+    </amp-viewer>
+
+    <!-- <div id="doc-container" class="doc-container">
       Document will appear here
     </div>
     <template id="amp-slot-template">
@@ -102,7 +110,7 @@
         This content comes from parent shell! Including forbidden elements, styles, etc.
         <img src="/examples.build/img/hero@1x.jpg" style="width: 40px; height: 40px;">
       </div>
-    </template>
+    </template> -->
   </div>
 
   <!-- Must be in the very end. -->

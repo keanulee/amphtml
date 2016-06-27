@@ -30,8 +30,9 @@ class Shell {
     this.win = win;
 
     /** @private @const {!AmpViewer} */
-    this.ampViewer_ = new AmpViewer(win,
-        win.document.getElementById('doc-container'));
+    this.ampViewer_ = document.querySelector('amp-viewer')
+    // this.ampViewer_ = new AmpViewer(win,
+    //     win.document.getElementById('doc-container'));
 
     /** @private {string} */
     this.currentPage_ = win.location.pathname;
@@ -47,7 +48,7 @@ class Shell {
     }
 
     // Install service worker
-    this.registerServiceWorker_();
+    // this.registerServiceWorker_();
   }
 
   registerServiceWorker_() {
@@ -90,16 +91,16 @@ class Shell {
     }
     if (a) {
       const url = new URL(a.href);
-      if (url.origin == this.win.location.origin &&
-              url.pathname.indexOf('/pwa/') == 0 &&
-              url.pathname.indexOf('amp.max.html') != -1) {
+      // if (url.origin == this.win.location.origin &&
+      //         url.pathname.indexOf('/pwa/') == 0 &&
+      //         url.pathname.indexOf('amp.max.html') != -1) {
         e.preventDefault();
         const newPage = url.pathname;
         log('Internal link to: ', newPage);
         if (newPage != this.currentPage_) {
           this.navigateTo(newPage);
         }
-      }
+      // }
     }
   }
 
@@ -126,9 +127,9 @@ class Shell {
     const push = !isShellUrl(path) && isShellUrl(oldPage);
     if (path != this.win.location.pathname) {
       if (push) {
-        this.win.history.pushState(null, '', path);
+        // this.win.history.pushState(null, '', path);
       } else {
-        this.win.history.replaceState(null, '', path);
+        // this.win.history.replaceState(null, '', path);
       }
     }
 
@@ -161,15 +162,15 @@ class Shell {
 }
 
 
-class AmpViewer {
+class AmpViewer extends HTMLElement {
 
-  constructor(win, container) {
+  createdCallback() {
     /** @private @const {!Window} */
-    this.win = win;
+    this.win = window;
     /** @private @const {!Element} */
-    this.container = container;
+    // this.container = container;
 
-    win.AMP_SHADOW = true;
+    this.win.AMP_SHADOW = true;
     this.ampReadyPromise_ = new Promise(resolve => {
       (window.AMP = window.AMP || []).push(resolve);
     });
@@ -180,9 +181,9 @@ class AmpViewer {
     /** @private @const {string} */
     this.baseUrl_ = null;
     /** @private @const {?Element} */
-    this.host_ = null;
+    // this.host_ = null;
     /** @private @const {?ShadowRoot} */
-    this.shadowRoot_ = null;
+    this.shadowRoot_ = this.createShadowRoot();
     /** @private @const {!Array<string>} */
     this.stylesheets_ = [];
     /** @private @const {!Array<!Element>} */
@@ -197,7 +198,7 @@ class AmpViewer {
   /**
    */
   clear() {
-    this.container.textContent = '';
+    this.shadowRoot_.textContent = '';
   }
 
   /**
@@ -206,21 +207,21 @@ class AmpViewer {
    */
   show(doc, url) {
     log('Show document:', doc, url);
-    this.container.textContent = '';
+    this.shadowRoot_.textContent = '';
 
     this.baseUrl_ = url;
 
-    this.host_ = this.win.document.createElement('div');
-    this.host_.classList.add('amp-doc-host');
+    // this.host_ = this.win.document.createElement('div');
+    // this.host_.classList.add('amp-doc-host');
 
-    const hostTemplate = this.win.document.getElementById('amp-slot-template');
-    if (hostTemplate) {
-      this.host_.appendChild(hostTemplate.content.cloneNode(true));
-    }
+    // const hostTemplate = this.win.document.getElementById('amp-slot-template');
+    // if (hostTemplate) {
+    //   this.host_.appendChild(hostTemplate.content.cloneNode(true));
+    // }
 
-    this.container.appendChild(this.host_);
+    // this.container.appendChild(this.host_);
 
-    this.shadowRoot_ = this.host_.createShadowRoot();
+    // this.shadowRoot_ = this.host_.createShadowRoot();
     log('Shadow root:', this.shadowRoot_);
 
     this.ampReadyPromise_.then(AMP => {
@@ -318,7 +319,7 @@ class AmpViewer {
       const exists = doc.querySelector('script' + existsExpr);
       if (exists) {
         log('- script already exists: ', customElement, customTemplate, src);
-      } else if (src.indexOf('/amp.js') != -1) {
+      } else if (src.indexOf('/v0.js') != -1) {
         // Do not install runtime again. Already installed via amp-shadow.js.
         log('- runtime already installed: ', src);
       } else {
@@ -369,13 +370,14 @@ class AmpViewer {
   }
 }
 
+document.registerElement('amp-viewer', AmpViewer);
 
 /**
  * @param {string} url
  * @return {boolean}
  */
 function isShellUrl(url) {
-  return (url == '/pwa' || url == '/pwa/');
+  return url.indexOf('pwa.html') !== -1;
 }
 
 
